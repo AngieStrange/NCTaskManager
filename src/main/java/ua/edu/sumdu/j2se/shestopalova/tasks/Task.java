@@ -1,5 +1,4 @@
 package ua.edu.sumdu.j2se.shestopalova.tasks;
-
 public class Task {
     private int time;
     private String title;
