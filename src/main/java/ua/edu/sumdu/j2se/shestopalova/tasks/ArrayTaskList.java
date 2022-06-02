@@ -7,7 +7,7 @@ public class ArrayTaskList {
     private int size = 0;
 
 
-   public void add(Task task){
+   public void add(Task task) throws IllegalArgumentException{
 
         if (size >= taskArray.length) {
             Task[] tempArr = new Task[taskArray.length+5];
@@ -16,6 +16,8 @@ public class ArrayTaskList {
         }
         taskArray[size] = task;
         size++;
+
+       if(task == null) throw new IllegalArgumentException("Task can't be null");
     }
 
     public boolean remove(Task task) {
@@ -36,11 +38,12 @@ public class ArrayTaskList {
         return size;
     }
 
-   public Task getTask(int index){
+   public Task getTask(int index) throws IndexOutOfBoundsException{
        if ((index >= size) && (index < 0)) {
-           return null;                             //тут краще зробити ексепшн
+           throw new IndexOutOfBoundsException("There is no task with such index");
        }
        return taskArray[index];
+
     }
 
    public ArrayTaskList incoming(int from, int to){
