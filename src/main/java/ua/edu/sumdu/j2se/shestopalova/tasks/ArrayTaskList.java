@@ -1,6 +1,6 @@
 package ua.edu.sumdu.j2se.shestopalova.tasks;
 
-public class ArrayTaskList {
+public class ArrayTaskList extends AbstractTaskList {
 
     private Task[] taskArray = new Task[10];
 
@@ -44,6 +44,10 @@ public class ArrayTaskList {
        }
        return taskArray[index];
 
+    }
+
+    public ListTypes.types getType() {
+        return ListTypes.types.ARRAY;
     }
 
    public ArrayTaskList incoming(int from, int to){

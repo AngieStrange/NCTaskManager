@@ -1,7 +1,7 @@
 package ua.edu.sumdu.j2se.shestopalova.tasks;
 
 
-public class LinkedTaskList {
+public class LinkedTaskList extends AbstractTaskList {
     private int listSize = 0;
     private Node headNode;
 
@@ -82,6 +82,9 @@ public class LinkedTaskList {
         }
         return null;
 
+    }
+    public ListTypes.types getType() {
+        return ListTypes.types.LINKED;
     }
 
     public LinkedTaskList incoming(int from, int to){
