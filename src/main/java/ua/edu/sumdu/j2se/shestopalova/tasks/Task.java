@@ -1,5 +1,4 @@
 package ua.edu.sumdu.j2se.shestopalova.tasks;
-
 public class Task {
     private int time;
     private String title;
@@ -14,11 +13,12 @@ public class Task {
      * @param time час задачі
      * @param title назва задачі
      * */
-    public Task(int time, String title) {
+    public Task(String title, int time) throws IllegalArgumentException {
         this.time = time;
         this.title = title;
         repeated = false;
         active = false;
+        if (time < 0 ) throw new IllegalArgumentException("Time can not be negative");
     }
 
     /* Конструктор, що конструює
@@ -29,13 +29,17 @@ public class Task {
      * @param end кінцева дата задачі
      * @param interval інтервал між задачами
      * */
-    public Task(String title, int start, int end, int interval) {
+    public Task(String title, int start, int end, int interval) throws IllegalArgumentException {
         this.title = title;
         this.start_time = start;
+        if(start_time < 0 ) throw new IllegalArgumentException("Start time can not be negative");
         this.end_time = end;
+        if(end_time<start_time) throw new IllegalArgumentException("Start time can not be less than end time");
         this.interval = interval;
+        if (interval <= 0 ) throw new IllegalArgumentException("Interval must be greater than zero");
         active = false;
         repeated = true;
+
     }
 
     /* Метод для зчитування та встановлення назви задачі
@@ -56,6 +60,7 @@ public class Task {
     /*Методи для зчитування та встановлення стану задачі*/
 
     public boolean isActive() {
+
         return active;
     }
 
@@ -138,7 +143,7 @@ public class Task {
               return current >= time ? -1 : time;
         }
 
-        if (current <= start_time) {
+        if (current < start_time) {
               return start_time;
         }
 
@@ -148,7 +153,7 @@ public class Task {
         else {
             int i;
             for (i = start_time; i <= end_time; i += interval) {
-                if (i >= current) {
+                if (i > current) {
                     return i;
                 }
             }
