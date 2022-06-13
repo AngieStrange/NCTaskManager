@@ -1,5 +1,9 @@
 package ua.edu.sumdu.j2se.shestopalova.tasks;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.ConcurrentModificationException;
+import java.util.stream.Stream;
 
 public class LinkedTaskList extends AbstractTaskList {
     private int listSize = 0;
@@ -20,7 +24,7 @@ public class LinkedTaskList extends AbstractTaskList {
         }
     }
 
-    public void add(Task task) throws NullPointerException {
+       public void add(Task task) throws NullPointerException {
         if (task == null) {
             throw new NullPointerException("task must not be null");
         }
@@ -35,7 +39,7 @@ public class LinkedTaskList extends AbstractTaskList {
 
     }
 
-    public boolean remove(Task task) throws NullPointerException {
+       public boolean remove(Task task) throws NullPointerException {
         if (task == null) {
             throw new NullPointerException("The task cannot be null");
         }
@@ -60,7 +64,7 @@ public class LinkedTaskList extends AbstractTaskList {
         return false;
     }
 
-    public int size() {
+       public int size() {
         return listSize;
     }
     public Task getTask(int index) throws IndexOutOfBoundsException,IllegalArgumentException{
@@ -83,11 +87,11 @@ public class LinkedTaskList extends AbstractTaskList {
         return null;
 
     }
-    public ListTypes.types getType() {
+       public ListTypes.types getType() {
         return ListTypes.types.LINKED;
     }
-
-    public LinkedTaskList incoming(int from, int to){
+@Override
+      public LinkedTaskList incoming(int from, int to){
         LinkedTaskList incominTasks = new LinkedTaskList();
 
         for (int i=0; i < listSize; i++) {
@@ -102,5 +106,71 @@ public class LinkedTaskList extends AbstractTaskList {
         }
         return incominTasks;
     }
+
+    @Override
+    public Iterator<Task> iterator() {
+        return new Iterator<Task>() {
+
+            private int index = 0;
+            private int previousLoc = -1;
+            private Node node = headNode;
+
+            @Override
+            public boolean hasNext() {
+                return node != null;
+            }
+
+            @Override
+            public Task next() {
+                try {
+                    int i = index;
+                    Task next = getTask(i);
+                    node = node.next;
+                    previousLoc = i;
+                    index = i + 1;
+                    return next;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            @Override
+            public void remove() {
+                if(previousLoc < 0) {
+                    throw new IllegalStateException("Can't remove!");
+                }
+
+                try {
+                    LinkedTaskList.this.remove(getTask(previousLoc));
+                    if (previousLoc < index)
+                        index--;
+                    previousLoc = -1;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new ConcurrentModificationException();
+                }
+            }
+
+        };
+    }
+
+    @Override
+    public String toString() {
+        Iterator<Task> taskIterator = this.iterator();
+        StringBuilder string = new StringBuilder("LinkedTaskList{");
+        while (taskIterator.hasNext()) {
+            string.append(taskIterator.next().toString()).append(", ");
+        }
+        return string.append("size=").append(this.size()).append('}').toString();
+    }
+
+    public Stream<Task> getStream(){
+        Task[] tasks = new Task[this.size()];
+        for (int i = 0; i < this.size(); i++) {
+            tasks[i] = this.getTask(i);
+        }
+        return Stream.of(tasks);
+    }
+
+
 
 }

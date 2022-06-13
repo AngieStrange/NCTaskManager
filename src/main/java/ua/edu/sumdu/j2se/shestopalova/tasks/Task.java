@@ -1,5 +1,7 @@
 package ua.edu.sumdu.j2se.shestopalova.tasks;
-public class Task {
+
+import java.util.Objects;
+public class Task implements Cloneable {
     private int time;
     private String title;
     private boolean active;
@@ -13,7 +15,7 @@ public class Task {
      * @param time час задачі
      * @param title назва задачі
      * */
-    public Task(String title, int time) throws IllegalArgumentException {
+    public Task(String title, int time) throws IllegalArgumentException  {
         this.time = time;
         this.title = title;
         repeated = false;
@@ -159,5 +161,46 @@ public class Task {
             }
         }
         return -1;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTitle(), isActive(), getTime(), getRepeatInterval(), isRepeated(), getStartTime(), getEndTime());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+        Task task = (Task) o;
+        return isActive() == task.isActive() &&
+                getTime() == task.getTime() &&
+                getRepeatInterval() == task.getRepeatInterval() &&
+                isRepeated() == task.isRepeated() &&
+                getStartTime() == task.getStartTime() &&
+                getEndTime() == task.getEndTime() &&
+                Objects.equals(getTitle(), task.getTitle());
+    }
+
+    public Object clone(){
+        try {
+            Task task_Clone = (Task) super.clone();
+            return task_Clone;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "title='" + title + '\'' +
+                ", time=" + time +
+                ", start=" + start_time +
+                ", end=" + end_time +
+                ", interval=" + interval +
+                ", active=" + active +
+                ", repeated=" + repeated +
+                '}';
     }
 }
