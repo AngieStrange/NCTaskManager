@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Iterable<Task>,Cloneable {
 
-    private int elemQuantity;
+
 
     public abstract void add(Task task);
 
@@ -22,33 +22,35 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable {
     public abstract Stream<Task> getStream();
 
 
-    public AbstractTaskList incoming(int from, int to) {
+    public final AbstractTaskList incoming(int from, int to)
+             throws IllegalArgumentException {
+            if (from < 0 || to < 0) {
+                throw new IllegalArgumentException("can not be negative");
+            }
         AbstractTaskList incominTasks =
                 TaskListFactory.createTaskList(getType());
-        {
-            for (int i = 0; i < size(); i++) {
-                if (getTask(i) == null) {
-                    continue;
-                }
-                getTask(i).nextTimeAfter(from);
+        this.getStream().filter(t -> t != null && t.nextTimeAfter(from) != -1 && t.nextTimeAfter(from) < to)
+                .forEach(incominTasks :: add);
 
-                if (from < getTask(i).nextTimeAfter(from) && getTask(i).nextTimeAfter(from) < to) {
-                    incominTasks.add(getTask(i));
-                }
-            }
-        }
+           /* for (int i = 0; i < size(); i++) {
+               if (getTask(i) == null) {
+                   continue;
+               }
+               getTask(i).nextTimeAfter(from);
+
+               if (from < getTask(i).nextTimeAfter(from) && getTask(i).nextTimeAfter(from) < to) {
+                   incominTasks.add(getTask(i));*/
+
         return incominTasks;
     }
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AbstractTaskList that = (AbstractTaskList) o;
-        return elemQuantity == that.elemQuantity;
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
+
     @Override
     public int hashCode() {
-        return Objects.hash(elemQuantity);
+        return super.hashCode();
     }
     @Override
     public Object clone(){

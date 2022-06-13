@@ -2,6 +2,7 @@ package ua.edu.sumdu.j2se.shestopalova.tasks;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
+import java.util.Objects;
 
 public class ArrayTaskList extends AbstractTaskList  {
 
@@ -49,7 +50,7 @@ public class ArrayTaskList extends AbstractTaskList  {
     public ListTypes.types getType() {
         return ListTypes.types.ARRAY;
     }
- @Override
+/* @Override
    public ArrayTaskList incoming(int from, int to){
        ArrayTaskList incomTasks = new ArrayTaskList();
 
@@ -64,7 +65,7 @@ public class ArrayTaskList extends AbstractTaskList  {
            }
        }
        return incomTasks;
-   }
+   }*/
 
     @Override
     public Iterator<Task> iterator() {
@@ -102,7 +103,22 @@ public class ArrayTaskList extends AbstractTaskList  {
     public Stream<Task> getStream(){
         return Stream.of(this.taskArray);
     }
-
+    @Override
+    public boolean equals(Object obj) {
+        ArrayTaskList arr = (ArrayTaskList) obj;
+        if (this == obj) return true;
+        if ( obj == null || getClass() != obj.getClass()) return false;
+        for (int i = 0; i< size; i++) {
+            if (!arr.taskArray[i].equals(taskArray[i])){
+                return  false;
+            }
+        }
+        return this.getType() == arr.getType() && size == arr.size ;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getType(),size);
+    }
 
 
 }
