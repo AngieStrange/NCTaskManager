@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
 import java.util.stream.Stream;
+import java.util.Objects;
 
 public class LinkedTaskList extends AbstractTaskList {
     private int listSize = 0;
@@ -90,22 +91,7 @@ public class LinkedTaskList extends AbstractTaskList {
        public ListTypes.types getType() {
         return ListTypes.types.LINKED;
     }
-@Override
-      public LinkedTaskList incoming(int from, int to){
-        LinkedTaskList incominTasks = new LinkedTaskList();
 
-        for (int i=0; i < listSize; i++) {
-            if (getTask(i) == null) {
-                continue;
-            }
-            getTask(i).nextTimeAfter(from);
-
-            if (from < getTask(i).nextTimeAfter(from) && getTask(i).nextTimeAfter(from) < to) {
-                incominTasks.add(getTask(i));
-            }
-        }
-        return incominTasks;
-    }
 
     @Override
     public Iterator<Task> iterator() {
@@ -170,7 +156,23 @@ public class LinkedTaskList extends AbstractTaskList {
         }
         return Stream.of(tasks);
     }
-
-
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (getClass() != o.getClass()) return false;
+        LinkedTaskList otherList = (LinkedTaskList) o;
+        if (otherList.headNode == null && headNode == null) return true;
+        while (headNode.next != null) {
+            if (!(otherList.headNode.task.equals(headNode.task))) {
+                return false;
+            }
+            headNode = headNode.next;
+        }
+        return headNode.task.equals(otherList.headNode.task);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.size(), headNode.task.getTitle());
+    }
 
 }
