@@ -119,6 +119,11 @@ public class ArrayTaskList extends AbstractTaskList  {
     public int hashCode() {
         return Objects.hash(this.getType(),size);
     }
-
+   @Override
+    public ArrayTaskList clone() throws CloneNotSupportedException {
+        ArrayTaskList cloned = (ArrayTaskList) super.clone();
+        cloned.taskArray = taskArray.clone();
+        return cloned;
+    }
 
 }
