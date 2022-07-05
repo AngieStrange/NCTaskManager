@@ -1,13 +1,18 @@
 package ua.edu.sumdu.j2se.shestopalova.tasks;
 
+import com.google.gson.annotations.Expose;
+
+import java.lang.annotation.Native;
 import java.util.Objects;
-public class Task implements Cloneable {
-    private int time;
+import java.time.LocalDateTime;
+import java.io.Serializable;
+public class Task implements Cloneable,Serializable {
+    private LocalDateTime time;
     private String title;
     private boolean active;
     private boolean repeated;
-    private int start_time;
-    private int end_time;
+    private LocalDateTime start_time;
+    private LocalDateTime end_time;
     private int interval;
 
     /* Конструктор, що конструює неактивну задачу, яка
@@ -15,12 +20,12 @@ public class Task implements Cloneable {
      * @param time час задачі
      * @param title назва задачі
      * */
-    public Task(String title, int time) throws IllegalArgumentException  {
+    public Task(String title, LocalDateTime time) throws IllegalArgumentException  {
         this.time = time;
         this.title = title;
         repeated = false;
         active = false;
-        if (time < 0 ) throw new IllegalArgumentException("Time can not be negative");
+        if (time == null ) throw new IllegalArgumentException("Time can not be null");
     }
 
     /* Конструктор, що конструює
@@ -31,14 +36,12 @@ public class Task implements Cloneable {
      * @param end кінцева дата задачі
      * @param interval інтервал між задачами
      * */
-    public Task(String title, int start, int end, int interval) throws IllegalArgumentException {
+    public Task(String title, LocalDateTime start, LocalDateTime end, int interval) throws IllegalArgumentException {
         this.title = title;
         this.start_time = start;
-        if(start_time < 0 ) throw new IllegalArgumentException("Start time can not be negative");
+        if(start_time == null ) throw new IllegalArgumentException("Start time can not be null");
         this.end_time = end;
-        if(end_time<start_time) throw new IllegalArgumentException("Start time can not be less than end time");
         this.interval = interval;
-        if (interval <= 0 ) throw new IllegalArgumentException("Interval must be greater than zero");
         active = false;
         repeated = true;
 
@@ -75,17 +78,20 @@ public class Task implements Cloneable {
      * повторення;
      * */
 
-    public int getTime() {
+    public LocalDateTime getTime() {
         return repeated ? start_time : time;
     }
     /* void setTime(int time), у разі, якщо задача повторювалась, вона має стати такою,
     * що не повторюється
     * @param time встановлюємий час
     * */
-    public void setTime(int time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
         if (repeated) {
             repeated = false;
+        }
+        if (time == null){
+            throw new IllegalArgumentException("Time can not be null");
         }
     }
 
@@ -99,11 +105,11 @@ public class Task implements Cloneable {
       повертати 0;
     * */
 
-    public int getStartTime() {
+    public LocalDateTime getStartTime() {
         return repeated ? start_time : time;
     }
 
-    public int getEndTime() {
+    public LocalDateTime getEndTime() {
         return repeated ? end_time : time;
     }
 
@@ -116,7 +122,7 @@ public class Task implements Cloneable {
      * @param end встановлює кінець
      * @param interval втсановлює інтервал
     * */
-    public void setTime(int start, int end, int interval) {
+    public void setTime(LocalDateTime start, LocalDateTime end, int interval) {
         this.start_time = start;
         this.end_time = end;
         this.interval = interval;
@@ -135,33 +141,29 @@ public class Task implements Cloneable {
      * @param current поточний час
      * */
 
-    public int nextTimeAfter(int current) {
-
-        if (!active) {
-              return -1;
+    public LocalDateTime nextTimeAfter(LocalDateTime current) {
+        if(isActive() && !isRepeated()) {
+            return (current.isAfter(getTime())) || current.isEqual(getTime()) ? null : getTime();
         }
-
-        if (!repeated) {
-              return current >= time ? -1 : time;
-        }
-
-        if (current < start_time) {
-              return start_time;
-        }
-
-        if (current > end_time) {
-              return -1;
-        }
-        else {
-            int i;
-            for (i = start_time; i <= end_time; i += interval) {
-                if (i > current) {
-                    return i;
+        if(isActive() & isRepeated()) {
+            if(current.isBefore(getTime())) {
+                return getTime();
+            }
+            else {
+                LocalDateTime time = getStartTime();
+                while (current.isAfter(time) || current.isEqual(time)) {
+                    time = time.plusSeconds(getRepeatInterval());
                 }
+                if(time.isAfter(getEndTime())) {
+                    return null;
+                }
+                return time;
             }
         }
-        return -1;
+        return null;
     }
+
+
 
     @Override
     public int hashCode() {
@@ -182,25 +184,21 @@ public class Task implements Cloneable {
                 Objects.equals(getTitle(), task.getTitle());
     }
 
-    public Object clone(){
-        try {
-            Task task_Clone = (Task) super.clone();
-            return task_Clone;
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+    @Override
+    public Task clone() throws CloneNotSupportedException {
+        return (Task) super.clone();
     }
 
     @Override
     public String toString() {
         return "Task{" +
-                "title='" + title + '\'' +
-                ", time=" + time +
-                ", start=" + start_time +
-                ", end=" + end_time +
-                ", interval=" + interval +
-                ", active=" + active +
-                ", repeated=" + repeated +
+                "title:'" + title + '\'' +
+                ", time:" + time +
+                ", start time:" + start_time +
+                ", end time:" + end_time +
+                ", interval:" + interval +
+                ", active:" + active +
+                ", repeated:" + repeated +
                 '}';
     }
 }

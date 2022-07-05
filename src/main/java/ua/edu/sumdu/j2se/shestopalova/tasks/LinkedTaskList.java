@@ -175,4 +175,8 @@ public class LinkedTaskList extends AbstractTaskList {
         return Objects.hash(this.size(), headNode.task.getTitle());
     }
 
+@Override
+    public LinkedTaskList clone() throws CloneNotSupportedException {
+        return (LinkedTaskList) super.clone();
+    }
 }
