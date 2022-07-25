@@ -1,10 +1,14 @@
-package ua.edu.sumdu.j2se.shestopalova.tasks;
+package ua.edu.sumdu.j2se.shestopalova.tasks.model;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.Objects;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-public class ArrayTaskList extends AbstractTaskList  {
+public class ArrayTaskList extends AbstractTaskList {
+
+    private static final Logger LOGGER = LogManager.getLogger(ArrayTaskList.class);
 
     private Task[] taskArray = new Task[10];
 
@@ -12,7 +16,7 @@ public class ArrayTaskList extends AbstractTaskList  {
 
 @Override
    public void add(Task task) throws IllegalArgumentException{
-
+    LOGGER.info("adding a task...");
         if (size >= taskArray.length) {
             Task[] tempArr = new Task[taskArray.length+5];
             System.arraycopy(taskArray, 0, tempArr, 0, taskArray.length);
@@ -25,7 +29,7 @@ public class ArrayTaskList extends AbstractTaskList  {
     }
 @Override
     public boolean remove(Task task) {
-
+    LOGGER.info("removing a task...");
         if (task != null) {
             for (int i = 0; i < taskArray.length; i++) {
                 if (taskArray[i].equals(task)) {

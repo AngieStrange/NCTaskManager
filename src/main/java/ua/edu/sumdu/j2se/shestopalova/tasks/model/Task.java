@@ -1,8 +1,5 @@
-package ua.edu.sumdu.j2se.shestopalova.tasks;
+package ua.edu.sumdu.j2se.shestopalova.tasks.model;
 
-import com.google.gson.annotations.Expose;
-
-import java.lang.annotation.Native;
 import java.util.Objects;
 import java.time.LocalDateTime;
 import java.io.Serializable;

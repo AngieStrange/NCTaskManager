@@ -1,13 +1,18 @@
-package ua.edu.sumdu.j2se.shestopalova.tasks;
+package ua.edu.sumdu.j2se.shestopalova.tasks.model;
 
 import com.google.gson.Gson;
+import ua.edu.sumdu.j2se.shestopalova.tasks.model.AbstractTaskList;
+import ua.edu.sumdu.j2se.shestopalova.tasks.model.Task;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 
 public class TaskIO {
-
+    private static final Logger LOGGER = LogManager.getLogger(ArrayTaskList.class);
     public static void write(AbstractTaskList tasks, OutputStream out) {
         try (DataOutputStream outStr = new DataOutputStream(out)) {
             outStr.writeInt(tasks.size());
@@ -25,7 +30,7 @@ public class TaskIO {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
 
         }
     }
@@ -55,7 +60,7 @@ public class TaskIO {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -79,7 +84,7 @@ public class TaskIO {
             write(tasks, buffWriter);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -87,7 +92,7 @@ public class TaskIO {
         try (BufferedReader buffReader = new BufferedReader(new FileReader(file))) {
             read(tasks, buffReader);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -95,7 +100,7 @@ public class TaskIO {
         try (FileOutputStream f = new FileOutputStream(file)) {
             write(tasks, f);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -103,7 +108,7 @@ public class TaskIO {
         try (FileInputStream f = new FileInputStream(file)) {
             read(tasks, f);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 

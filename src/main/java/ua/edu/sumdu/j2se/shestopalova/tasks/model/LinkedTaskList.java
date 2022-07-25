@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.shestopalova.tasks;
+package ua.edu.sumdu.j2se.shestopalova.tasks.model;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
